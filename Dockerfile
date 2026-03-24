@@ -1,5 +1,18 @@
 FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
-RUN apt-get update && apt-get install -y libc-bin && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=9000
 
-CMD bash -lc "nvcc --version && echo '---' && ldconfig -p | grep cudnn || true"
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    libc-bin \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY app.py /app/app.py
+
+CMD ["python3", "/app/app.py"]
